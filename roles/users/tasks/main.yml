@@ -1,0 +1,33 @@
+---
+- name: users / Create new user
+  user:
+    name: "{{ item.value.name }}"
+    password: "{{ item.value.password }}"
+    shell: /bin/sh
+    home: "/home/{{ item.value.name }}"
+    groups: "{{ item.value.groups }}"
+    state: present
+  with_dict: "{{ new_users }}"
+
+- name: users / Distribute authorized key
+  authorized_key:
+    user: "{{ item.value.name }}"
+    key: "{{ lookup('file', item.value.key) }}"
+  with_dict: "{{ new_users }}"
+
+- name: users / make sudoers.d directory
+  file:
+    path: /etc/sudoers.d
+    owner: root
+    group: root
+    mode: 0750
+    state: directory
+
+- name: users / Deploy temporary sudoers file
+  template:
+    src: "{{ item.value.privilege }}_sudoers.j2"
+    dest: "/etc/sudoers.d/{{ item.value.name }}"
+    owner: root
+    group: root
+    mode: 0400
+  with_dict: "{{ new_users }}"

@@ -1,0 +1,12 @@
+---
+- name: common / Update yum packages
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+
+- name: common / Import EPEL repository
+  yum:
+    name: epel-release
+    state: latest
+    update_cache: yes

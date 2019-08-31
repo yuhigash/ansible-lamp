@@ -1,0 +1,8 @@
+---
+new_users:
+  admin:
+    name: higashiyama
+    password: "{{ 'higashiyama' | password_hash('sha256') }}"
+    groups: wheel
+    privilege: admin
+    key: ~/.ssh/id_rsa.pub
